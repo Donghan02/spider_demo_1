@@ -54,6 +54,7 @@ class Spider01Spider(scrapy.Spider):
             data = json_response['data']
             group_items = json_response['groupItems']
             item = {'data': data, 'group_items': group_items}
+            print(json_response)
             yield item
         except:
             print(json_response)

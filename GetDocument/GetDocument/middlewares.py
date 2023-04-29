@@ -11,6 +11,7 @@ from fake_useragent import UserAgent
 import requests
 import json
 import random
+import time
 
 
 class GetDocumentSpiderMiddleware:
@@ -101,10 +102,30 @@ class AddProxy:
         return s
 
     def process_request(self, request, spider):
-        while len(self.ip_list) <= 3:
+        while len(self.ip_list) <= 0:
             ip = self.get_ip()
             if ip is not None:
                 self.ip_list.append(ip)
+                # 实例化一个对象
+                ua = UserAgent()
+                # 生成一个user_agent
+                user_agent = ua.chrome
+                # 定义请求头
+                h = {
+                    'Host': 'www.chachawenshu.com',
+                    'Proxy-Connection': 'keep-alive',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+                }
+                # 添加ua
+                h['User-Agent']=user_agent
+                # 请求首页
+                requests.get(url="http://www.chachawenshu.com/", headers=h, proxies={'http': ip})
+                requests.get(url="http://www.chachawenshu.com/api/v1/index/list?page=1&pageSize=7", headers=h, proxies={'http': ip})
+                requests.get(url="http://www.chachawenshu.com/api/v1/index/citiao-hit?pageSize=5", headers=h, proxies={'http': ip})
+                time.sleep(5)
+                print(ip)
         ip = random.choice(self.ip_list)
         request.meta["proxy"] = ip
         print(f"本次使用的IP为{ip}")
@@ -125,6 +146,6 @@ class AddProxy:
             timeout=5).text.replace("}{", "},{")
         res = json.loads(res)
         if res['code'] == 0 and res['success'] is True:
-            return "https://" + str(res['data'][0]['ip']) + ":" + str(res['data'][0]['port'])
+            return "http://" + str(res['data'][0]['ip']) + ":" + str(res['data'][0]['port'])
         else:
             return None

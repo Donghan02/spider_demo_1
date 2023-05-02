@@ -102,6 +102,7 @@ class AddProxy:
         return s
 
     def process_request(self, request, spider):
+        print(self.ip_list)
         while len(self.ip_list) <= 0:
             ip = self.get_ip()
             if ip is not None:
@@ -110,20 +111,69 @@ class AddProxy:
                 ua = UserAgent()
                 # 生成一个user_agent
                 user_agent = ua.chrome
-                # 定义请求头
-                h = {
-                    'Host': 'www.chachawenshu.com',
-                    'Proxy-Connection': 'keep-alive',
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-                    'Accept-Encoding': 'gzip, deflate',
-                    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-                }
-                # 添加ua
-                h['User-Agent']=user_agent
-                # 请求首页
-                requests.get(url="http://www.chachawenshu.com/", headers=h, proxies={'http': ip})
-                requests.get(url="http://www.chachawenshu.com/api/v1/index/list?page=1&pageSize=7", headers=h, proxies={'http': ip})
-                requests.get(url="http://www.chachawenshu.com/api/v1/index/citiao-hit?pageSize=5", headers=h, proxies={'http': ip})
+
+                # 请求nginx相关
+                # 创建session对象
+                http = requests.Session()
+                # 返回结果数组
+                rep = []
+                h1 = {'Host': 'www.chachawenshu.com',
+                     'Connection': 'keep-alive',
+                     'sec-ch-ua': '"Chromium";v="112", "Google Chrome";v="112", "Not:A-Brand";v="99"',
+                     'sec-ch-ua-mobile': '?0',
+                     'User-Agent': user_agent,
+                     'sec-ch-ua-platform': "Windows",
+                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                     'Sec-Fetch-Site': 'cross-site',
+                     'Sec-Fetch-Mode': 'navigate',
+                     'Sec-Fetch-Dest': 'document',
+                     'Referer': 'https://cn.bing.com/',
+                     'Accept-Encoding': 'gzip, deflate, br',
+                     'Accept-Language': 'zh-CN,zh;q=0.9'}
+                rep.append(http.get(url="https://www.chachawenshu.com/", headers=h1, proxies={'http': ip}))
+                h2 = {'Host': 'www.chachawenshu.com',
+                     'Connection': 'keep-alive',
+                     'sec-ch-ua': '"Chromium";v="112", "Google Chrome";v="112", "Not:A-Brand";v="99"',
+                     'sec-ch-ua-mobile': '?0',
+                     'User-Agent': user_agent,
+                     'sec-ch-ua-platform': "Windows",
+                     'Accept': 'text/css,*/*;q=0.1',
+                     'Sec-Fetch-Site': 'same-origin',
+                     'Sec-Fetch-Mode': 'no-cors',
+                     'Sec-Fetch-Dest': 'style',
+                     'Referer': 'https://www.chachawenshu.com/',
+                     'Accept-Encoding': 'gzip, deflate, br',
+                     'Accept-Language': 'zh-CN,zh;q=0.9'}
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/css/chunk-common.417b2cca.css", headers=h2, proxies={'http': ip}))
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/css/index.c8e17bdc.css", headers=h2, proxies={'http': ip}))
+                h2['Sec-Fetch-Dest'] = 'script'
+                h2['Accept'] = '*/*'
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/js/chunk-vendors.b6047c3c.js", headers=h2, proxies={'http': ip}))
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/js/chunk-common.25693a67.js", headers=h2, proxies={'http': ip}))
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/js/index.f27a0dd3.js", headers=h2, proxies={'http': ip}))
+                h2['Accept'] = 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+                h2['Sec-Fetch-Dest'] = 'image'
+                h2['Referer'] = 'https://www.chachawenshu.com/public/static/css/index.c8e17bdc.css'
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/img/case_searchbg.67e9e1c0.png", headers=h2, proxies={'http': ip}))
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/img/preloader.3bd417c0.gif", headers=h2, proxies={'http': ip}))
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/img/class-bg2.f8513906.jpg", headers=h2, proxies={'http': ip}))
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/img/class-bg3.5a3ef5d9.jpg", headers=h2, proxies={'http': ip}))
+                h2['Referer'] = 'https://www.chachawenshu.com/'
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/img/logo2.10cf5c0e.png", headers=h2, proxies={'http': ip}))
+                h2['Sec-Fetch-Dest'] = 'empty'
+                h2['Sec-Fetch-Mode'] = 'cors'
+                h2['Accept'] = 'application/json, text/plain, */*'
+                rep.append(http.get(url="https://www.chachawenshu.com/api/v1/index/list?page=1&pageSize=7", headers=h2, proxies={'http': ip}))
+                rep.append(http.get(url="https://www.chachawenshu.com/api/v1/index/citiao-hit?pageSize=5", headers=h2, proxies={'http': ip}))
+                h2['Referer'] = 'https://www.chachawenshu.com/public/static/css/index.c8e17bdc.css'
+                h2['Sec-Fetch-Dest'] = 'image'
+                h2['Sec-Fetch-Mode'] = 'no-cors'
+                h2['Accept'] = 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+                rep.append(http.get(url="https://www.chachawenshu.com/public/static/img/dftt_ztbg.7b3a3c28.png", headers=h2, proxies={'http': ip}))
+                rep.append(http.get(url="https://www.chachawenshu.com/favicon.ico", headers=h2, proxies={'http': ip}))
+                for x in rep:
+                    print(x)
+                    print(x.text)
                 time.sleep(5)
                 print(ip)
         ip = random.choice(self.ip_list)

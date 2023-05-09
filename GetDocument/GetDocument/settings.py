@@ -34,7 +34,7 @@ ROBOTSTXT_OBEY = False
 COOKIES_ENABLED = False
 
 # 日志等级
-LOG_LEVEL = 'WARNING'
+LOG_LEVEL = 'INFO'
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -60,9 +60,10 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    "scrapy.extensions.telnet.TelnetConsole": None,
-#}
+EXTENSIONS = {
+   # "scrapy.extensions.telnet.TelnetConsole": None,
+   'scrapy.extensions.logstats.LogStats': 1,
+}
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
@@ -95,3 +96,5 @@ ITEM_PIPELINES = {
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+# 输出统计信息的时间间隔，单位为秒
+LOGSTATS_INTERVAL = 30

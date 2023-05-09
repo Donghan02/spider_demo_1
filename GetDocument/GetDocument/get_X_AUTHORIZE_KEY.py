@@ -20,7 +20,7 @@ def getX_AUTHORIZE_KEY(ww, v):
     b = int(v[-2])
     S_key = "7veTpnogkH6LG7JPK5kW0JBF8bFJTM8I"
     md5Key = "createElement" + ww + v + S_key + S_key[a:a + b]
-    print(md5Key)
+    # print(md5Key)
     md5 = hashlib.md5()
     md5.update(md5Key.encode('utf-8'))
     return md5.hexdigest()
